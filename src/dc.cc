@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <algorithm>
 
 DEFINE_PARAM(prefer_sharp, 0, "When branching, prefer items with a # prefix");
 
