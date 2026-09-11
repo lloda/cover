@@ -17,7 +17,7 @@
 // (5) Add a sentence to the help text displayed with -h.
 
 int FLAGS_verbosity = 1;
-bool FLAGS_counters = true;
+bool FLAGS_counters = false;
 std::string FLAGS_params = "";
 
 bool parse_flags(int argc, char* argv[], int* option_index) {
