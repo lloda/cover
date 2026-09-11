@@ -19,6 +19,7 @@
 int FLAGS_verbosity = 1;
 bool FLAGS_counters = false;
 std::string FLAGS_params = "";
+bool FLAGS_solution = false;
 
 bool parse_flags(int argc, char* argv[], int* option_index) {
     *option_index = 0;
@@ -28,10 +29,11 @@ bool parse_flags(int argc, char* argv[], int* option_index) {
         { "verbosity",      required_argument,  NULL, 'v' },
         { "params",         required_argument,  NULL, 'p' },
         { "counters",       no_argument,        NULL, 'c' },
+        { "solution",       no_argument,        NULL, 's' },
         { 0, 0, 0, 0}
     };
 
-    char optstring[] = "v:p:c";
+    char optstring[] = "v:p:cs";
 
     while (1) {
         c = getopt_long(argc, argv, optstring, long_options, nullptr);
@@ -48,6 +50,9 @@ bool parse_flags(int argc, char* argv[], int* option_index) {
         case 'p':
             FLAGS_params = optarg;
             Params::singleton().parse(FLAGS_params);
+            break;
+        case 's':
+            FLAGS_solution = true;
             break;
         default:
             return false;
