@@ -242,18 +242,27 @@ struct XC {
     }
 
     void visit(size_t l) {
-        std::ostringstream oss;
-        oss << "Solution: " << std::endl;
-        for (size_t j = 0; j < l; ++j) {
-            size_t r = choice[j];
-            while (TOP(r) >= 0) ++r;
-            oss << "  " << -TOP(r) << ": ";
-            for(size_t p = ULINK(r); TOP(p) > 0; ++p) {
-                oss << NAME(TOP(p)) << " ";
+        if (FLAGS_solution) {
+            for (size_t j = 0; j < l; ++j) {
+                size_t r = choice[j];
+                while (TOP(r) >= 0) ++r;
+                PRINT << -TOP(r) << " ";
             }
-            oss << std::endl;
+            PRINT << std::endl;
+        } else {
+            std::ostringstream oss;
+            oss << "Solution: " << std::endl;
+            for (size_t j = 0; j < l; ++j) {
+                size_t r = choice[j];
+                while (TOP(r) >= 0) ++r;
+                oss << "  " << -TOP(r) << ": ";
+                for(size_t p = ULINK(r); TOP(p) > 0; ++p) {
+                    oss << NAME(TOP(p)) << " ";
+                }
+                oss << std::endl;
+            }
+            LOG(1) << oss.str();
         }
-        LOG(1) << oss.str();
     }
 
     double progress(size_t l) {
