@@ -114,7 +114,7 @@ struct MCC {
     }
 
     MCC(const char* filename) {
-        FILE* f = fopen(filename, "r");
+        FILE* f = filename ? fopen(filename, "r") : stdin;
         CHECK(f) << "Failed to open file: " << filename;
         char s[MAX_LINE_SIZE];
         char ss[MAX_LINE_SIZE];
@@ -231,7 +231,7 @@ struct MCC {
 
         LOG(3) << "After parsing, memory is: " << debug_nodes();
         fclose(f);
-        
+
         int max_levels = num_options + num_items + 1;
         choice = std::vector<size_t>(max_levels);
         ft = std::vector<size_t>(max_levels);
@@ -531,6 +531,6 @@ int main(int argc, char** argv) {
     CHECK(!PARAM_prefer_sharp || !PARAM_prefer_unsharp) <<
         "Both prefer_sharp and prefer_unsharp are set. Use only one.";
     init_counters();
-    MCC(argv[oidx]).solve();
+    MCC(oidx < argc ? argv[oidx] : nullptr).solve();
     return 0;
 }

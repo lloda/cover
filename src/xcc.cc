@@ -73,7 +73,7 @@ struct XCC {
     }
 
     XCC(const char* filename) {
-        FILE* f = fopen(filename, "r");
+        FILE* f = filename ? fopen(filename, "r") : stdin;
         CHECK(f) << "Failed to open file: " << filename;
         char s[MAX_LINE_SIZE];
         char ss[MAX_LINE_SIZE];
@@ -388,6 +388,6 @@ int main(int argc, char** argv) {
     CHECK(!PARAM_prefer_sharp || !PARAM_prefer_unsharp) <<
         "Both prefer_sharp and prefer_unsharp are set. Use only one.";
     init_counters();
-    XCC(argv[oidx]).solve();
+    XCC(oidx < argc ? argv[oidx] : nullptr).solve();
     return 0;
 }
