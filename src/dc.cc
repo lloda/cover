@@ -46,6 +46,7 @@ struct DC {
     std::vector<std::string> color_;
     std::vector<size_t> item_;
     std::vector<size_t> set_;
+    std::vector<size_t> org_; // map to option indices from input file
     size_t active_;
     size_t oactive_;
     size_t second_;
@@ -103,6 +104,7 @@ struct DC {
         item_.resize(name_.size(), 0);
         OptionNode spacer = {.item = 0, .loc = 0, .color = 0};
         node_.push_back(spacer);
+        org_.push_back(0);
         active_ = name_.size();
         if (num_primary_ == std::numeric_limits<size_t>::max()) {
             num_primary_ = name_.size();
@@ -120,6 +122,7 @@ struct DC {
         while(fgets(s, MAX_LINE_SIZE, f) != NULL) {
             CHECK(strlen(s) < MAX_LINE_SIZE-1 || s[strlen(s)-1] == '\n') <<
                 "Input line too long. Recompile with larger MAX_LINE_SIZE.";
+            ++num_options;
             int offset = 0, r = 0;
             size_t cnum = 0;
             std::string curr;
@@ -139,6 +142,7 @@ struct DC {
                 seen.insert(curr);
                 OptionNode node = {.item = i, .loc = SIZE(SET_PAD * i), .color = cnum};
                 node_.push_back(node);
+                org_.push_back(num_options);
                 ++n;
                 SIZE(2*i)++;
             }
@@ -148,8 +152,8 @@ struct DC {
             node_[node_.size() - n - 1].loc = n;
             OptionNode spacer = {.item = -n, .loc = 0, .color = 0};
             node_.push_back(spacer);
+            org_.push_back(0);
             seen.clear();
-            ++num_options;
             n = 0;
         }
         color_.resize(next_color);
@@ -353,7 +357,14 @@ struct DC {
 
             if (theta == std::numeric_limits<size_t>::max()) {
                 // C9. [Visit a solution.]
-                LOG(1) << "Solution:\n" << print_solution(xs);
+                if (FLAGS_solution) {
+                    for (size_t x : xs) {
+                        PRINT << org_[x] << " ";
+                    }
+                    PRINT << std::endl;
+                } else {
+                    LOG(1) << "Solution:\n" << print_solution(xs);
+                }
                 INC(solutions);
 
                 // TODO: this should be a do {} while () around C10.
